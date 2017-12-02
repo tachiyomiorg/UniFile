@@ -110,6 +110,38 @@ final class DocumentsContractApi21 {
         return results.toArray(new Uri[results.size()]);
     }
 
+    public static NamedUri[] listFilesNamed(Context context, Uri self) {
+        final ContentResolver resolver = context.getContentResolver();
+        final Uri childrenUri = DocumentsContract.buildChildDocumentsUriUsingTree(self,
+                DocumentsContract.getDocumentId(self));
+        final ArrayList<NamedUri> results = new ArrayList<>();
+
+        // Because SAF is slow, we use this method to also get the document's name with the id,
+        // as performance isn't affected that much if used in this cursor. This saves from creating
+        // a cursor every time "getName()" is called for every file.
+        Cursor c = null;
+        try {
+            c = resolver.query(childrenUri, new String[] {
+                    DocumentsContract.Document.COLUMN_DOCUMENT_ID,
+                    DocumentsContract.Document.COLUMN_DISPLAY_NAME }, null, null, null);
+            if (null != c) {
+                while (c.moveToNext()) {
+                    final String documentId = c.getString(0);
+                    final String documentName = c.getString(1);
+                    final Uri documentUri = DocumentsContract.buildDocumentUriUsingTree(self,
+                            documentId);
+                    results.add(new NamedUri(documentUri, documentName));
+                }
+            }
+        } catch (Exception e) {
+            // Log.w(TAG, "Failed query: " + e);
+        } finally {
+            closeQuietly(c);
+        }
+
+        return results.toArray(new NamedUri[results.size()]);
+    }
+
     public static Uri renameTo(Context context, Uri self, String displayName) {
         try {
             return DocumentsContract.renameDocument(context.getContentResolver(), self, displayName);

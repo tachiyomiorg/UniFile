@@ -36,11 +36,17 @@ class TreeDocumentFile extends UniFile {
 
     private final Context mContext;
     private Uri mUri;
+    private String mName;
 
     TreeDocumentFile(UniFile parent, Context context, Uri uri) {
+        this(parent, context, uri, null);
+    }
+
+    TreeDocumentFile(UniFile parent, Context context, Uri uri, String name) {
         super(parent);
         mContext = context.getApplicationContext();
         mUri = uri;
+        mName = name;
     }
 
     @Override
@@ -108,6 +114,9 @@ class TreeDocumentFile extends UniFile {
 
     @Override
     public String getName() {
+        if (mName != null) {
+            return mName;
+        }
         return DocumentsContractApi19.getName(mContext, mUri);
     }
 
@@ -163,6 +172,7 @@ class TreeDocumentFile extends UniFile {
 
     @Override
     public boolean delete() {
+        invalidateName();
         return DocumentsContractApi19.delete(mContext, mUri);
     }
 
@@ -177,11 +187,11 @@ class TreeDocumentFile extends UniFile {
             return null;
         }
 
-        final Uri[] result = DocumentsContractApi21.listFiles(mContext, mUri);
+        final NamedUri[] result = DocumentsContractApi21.listFilesNamed(mContext, mUri);
         final UniFile[] resultFiles = new UniFile[result.length];
         for (int i = 0, n = result.length; i < n; i++) {
-            Uri uri = result[i];
-            resultFiles[i] = new TreeDocumentFile(this, mContext, uri);
+            NamedUri namedUri = result[i];
+            resultFiles[i] = new TreeDocumentFile(this, mContext, namedUri.uri, namedUri.name);
         }
         return resultFiles;
     }
@@ -196,12 +206,12 @@ class TreeDocumentFile extends UniFile {
             return null;
         }
 
-        final Uri[] uris = DocumentsContractApi21.listFiles(mContext, mUri);
+        final NamedUri[] uris = DocumentsContractApi21.listFilesNamed(mContext, mUri);
         final ArrayList<UniFile> results = new ArrayList<>();
-        for (Uri uri : uris) {
-            String name = DocumentsContractApi19.getName(mContext, uri);
+        for (NamedUri uri : uris) {
+            String name = DocumentsContractApi19.getName(mContext, uri.uri);
             if (name != null && filter.accept(this, name)) {
-                results.add(new TreeDocumentFile(this, mContext, uri));
+                results.add(new TreeDocumentFile(this, mContext, uri.uri, uri.name));
             }
         }
         return results.toArray(new UniFile[results.size()]);
@@ -217,11 +227,10 @@ class TreeDocumentFile extends UniFile {
             return null;
         }
 
-        final Uri[] result = DocumentsContractApi21.listFiles(mContext, mUri);
-        for (Uri uri : result) {
-            final String name = DocumentsContractApi19.getName(mContext, uri);
-            if (displayName.equals(name)) {
-                return new TreeDocumentFile(this, mContext, uri);
+        final NamedUri[] result = DocumentsContractApi21.listFilesNamed(mContext, mUri);
+        for (NamedUri uri : result) {
+            if (displayName.equals(uri.name)) {
+                return new TreeDocumentFile(this, mContext, uri.uri, displayName);
             }
         }
         return null;
@@ -229,6 +238,7 @@ class TreeDocumentFile extends UniFile {
 
     @Override
     public boolean renameTo(String displayName) {
+        invalidateName();
         final Uri result = DocumentsContractApi21.renameTo(mContext, mUri, displayName);
         if (result != null) {
             mUri = result;
@@ -314,5 +324,9 @@ class TreeDocumentFile extends UniFile {
         }
 
         return new RawRandomAccessFile(TrickRandomAccessFile.create(pfd, mode));
+    }
+
+    private void invalidateName() {
+        mName = null;
     }
 }
