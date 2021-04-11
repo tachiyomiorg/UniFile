@@ -220,6 +220,11 @@ class TreeDocumentFile extends UniFile {
 
     @Override
     public UniFile findFile(String displayName) {
+        return findFile(displayName, false);
+    }
+
+    @Override
+    public UniFile findFile(String displayName, boolean ignoreCase) {
         if (TextUtils.isEmpty(displayName)) {
             return null;
         }
@@ -230,7 +235,7 @@ class TreeDocumentFile extends UniFile {
 
         final NamedUri[] result = DocumentsContractApi21.listFilesNamed(mContext, mUri);
         for (NamedUri uri : result) {
-            if (displayName.equals(uri.name)) {
+            if (Utils.equals(displayName, uri.name, ignoreCase)) {
                 return new TreeDocumentFile(this, mContext, uri.uri, displayName);
             }
         }

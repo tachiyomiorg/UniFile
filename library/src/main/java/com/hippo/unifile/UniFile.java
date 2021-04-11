@@ -392,12 +392,21 @@ public abstract class UniFile {
     public abstract UniFile[] listFiles(FilenameFilter filter);
 
     /**
-     * Test there is a file with the display name in the directory.
+     * Test there is a file with the exact same display name in the directory.
      *
      * @return the file if found it, or {@code null}.
      */
     @Nullable
     public abstract UniFile findFile(String displayName);
+
+    /**
+     * Test there is a file with the display name in the directory.
+     *
+     * @param ignoreCase Whether to do a case insensitive check.
+     * @return the file if found it, or {@code null}.
+     */
+    @Nullable
+    public abstract UniFile findFile(String displayName, boolean ignoreCase);
 
     /**
      * Renames this file to {@code displayName}.

@@ -208,6 +208,12 @@ class AssetFile extends UniFile {
     @Nullable
     @Override
     public UniFile findFile(String displayName) {
+        return findFile(displayName, false);
+    }
+
+    @Nullable
+    @Override
+    public UniFile findFile(String displayName, boolean ignoreCase) {
         if (TextUtils.isEmpty(displayName)) {
             return null;
         }
@@ -219,7 +225,7 @@ class AssetFile extends UniFile {
             }
 
             for (String f : files) {
-                if (displayName.equals(f)) {
+                if (Utils.equals(displayName, f, ignoreCase)) {
                     return new AssetFile(this, mAssetManager, Utils.resolve(mPath, displayName));
                 }
             }

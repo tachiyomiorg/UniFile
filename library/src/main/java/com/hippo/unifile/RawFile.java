@@ -189,6 +189,11 @@ class RawFile extends UniFile {
 
     @Override
     public UniFile findFile(String displayName) {
+        return findFile(displayName, false);
+    }
+
+    @Override
+    public UniFile findFile(String displayName, boolean ignoreCase) {
         if (TextUtils.isEmpty(displayName)) {
             return null;
         }

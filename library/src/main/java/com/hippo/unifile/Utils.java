@@ -88,4 +88,12 @@ class Utils {
         if (parent.equals("/")) return parent + child;
         return parent + '/' + child;
     }
+
+    static boolean equals(String str1, String str2, boolean ignoreCase) {
+        if (ignoreCase) {
+            return str1.equalsIgnoreCase(str2);
+        } else {
+            return str1.equals(str2);
+        }
+    }
 }
