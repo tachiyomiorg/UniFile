@@ -20,9 +20,10 @@ package com.hippo.unifile;
  * Created by Hippo on 11/19/2016.
  */
 
-import android.support.annotation.Nullable;
 import android.text.TextUtils;
 import android.webkit.MimeTypeMap;
+
+import androidx.annotation.Nullable;
 
 class Utils {
     private Utils() {}

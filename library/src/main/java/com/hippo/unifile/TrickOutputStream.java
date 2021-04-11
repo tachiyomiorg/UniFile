@@ -23,7 +23,8 @@ package com.hippo.unifile;
 import android.content.Context;
 import android.net.Uri;
 import android.os.ParcelFileDescriptor;
-import android.support.annotation.NonNull;
+
+import androidx.annotation.NonNull;
 
 import java.io.FileDescriptor;
 import java.io.FileOutputStream;

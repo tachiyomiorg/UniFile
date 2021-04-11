@@ -1,14 +1,14 @@
 apply plugin: 'com.android.application'
 
 android {
-    compileSdkVersion 25
-    buildToolsVersion "25.0.1"
+    compileSdkVersion 29
+    buildToolsVersion "29.0.3"
 
     defaultConfig {
         applicationId "com.hippo.unifile.example"
-        minSdkVersion 4
-        targetSdkVersion 25
-        versionCode 7
+        minSdkVersion 21
+        targetSdkVersion 29
+        versionCode 8
         versionName '1.0.0'
     }
 
@@ -21,7 +21,8 @@ android {
 }
 
 dependencies {
-    compile fileTree(dir: 'libs', include: ['*.jar'])
-    compile project(':library')
-    testCompile 'junit:junit:4.12'
+    implementation project(':library')
+    compileOnly 'androidx.annotation:annotation:1.2.0'
+
+    testImplementation 'junit:junit:4.13.2'
 }
