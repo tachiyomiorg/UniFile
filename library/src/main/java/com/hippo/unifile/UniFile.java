@@ -133,6 +133,7 @@ public abstract class UniFile {
     /**
      * Create a {@link UniFile} representing the given {@link Uri}.
      */
+    @Nullable
     public static UniFile fromUri(Context context, Uri uri) {
         if (context == null || uri == null) {
             return null;
@@ -222,6 +223,7 @@ public abstract class UniFile {
      * @see android.provider.DocumentsContract#createDocument(ContentResolver,
      *      Uri, String, String)
      */
+    @Nullable
     public abstract UniFile createFile(String displayName);
 
     /**
@@ -232,6 +234,7 @@ public abstract class UniFile {
      * @see android.provider.DocumentsContract#createDocument(ContentResolver,
      *      Uri, String, String)
      */
+    @Nullable
     public abstract UniFile createDirectory(String displayName);
 
     /**
