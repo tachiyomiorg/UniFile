@@ -57,7 +57,7 @@ class AssetFile extends UniFile {
 
     @Override
     public UniFile createDirectory(String displayName) {
-        UniFile file = findFile(displayName);
+        UniFile file = findFile(displayName, true);
         if (file != null && file.isDirectory()) {
             return file;
         } else {

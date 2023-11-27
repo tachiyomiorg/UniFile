@@ -93,7 +93,7 @@ class TreeDocumentFile extends UniFile {
             return null;
         }
 
-        UniFile child = findFile(displayName);
+        UniFile child = findFile(displayName, true);
 
         if (child != null) {
             if (child.isDirectory()) {
