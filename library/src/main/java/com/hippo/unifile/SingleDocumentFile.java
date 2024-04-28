@@ -132,11 +132,6 @@ class SingleDocumentFile extends UniFile {
     }
 
     @Override
-    public UniFile findFile(String displayName, boolean ignoreCase) {
-        return null;
-    }
-
-    @Override
     public boolean renameTo(String displayName) {
         return false;
     }

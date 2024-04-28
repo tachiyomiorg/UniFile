@@ -19,6 +19,7 @@ package com.hippo.unifile;
 import android.content.Context;
 import android.net.Uri;
 import android.os.ParcelFileDescriptor;
+import android.provider.DocumentsContract;
 import android.text.TextUtils;
 import android.util.Log;
 import android.webkit.MimeTypeMap;
@@ -93,7 +94,7 @@ class TreeDocumentFile extends UniFile {
             return null;
         }
 
-        UniFile child = findFile(displayName, true);
+        UniFile child = findFile(displayName);
 
         if (child != null) {
             if (child.isDirectory()) {
@@ -220,11 +221,6 @@ class TreeDocumentFile extends UniFile {
 
     @Override
     public UniFile findFile(String displayName) {
-        return findFile(displayName, false);
-    }
-
-    @Override
-    public UniFile findFile(String displayName, boolean ignoreCase) {
         if (TextUtils.isEmpty(displayName)) {
             return null;
         }
@@ -233,13 +229,17 @@ class TreeDocumentFile extends UniFile {
             return null;
         }
 
-        final NamedUri[] result = DocumentsContractApi21.listFilesNamed(mContext, mUri);
-        for (NamedUri uri : result) {
-            if (Utils.equals(displayName, uri.name, ignoreCase)) {
-                return new TreeDocumentFile(this, mContext, uri.uri, displayName);
-            }
+        String documentId = DocumentsContract.getDocumentId(mUri);
+        documentId += "/" + displayName;
+
+        Uri documentUri = DocumentsContract.buildDocumentUriUsingTree(mUri, documentId);
+        UniFile child = new TreeDocumentFile(this, mContext, documentUri, displayName);
+
+        if (child.exists()) {
+            return child;
+        } else {
+            return null;
         }
-        return null;
     }
 
     @Override
