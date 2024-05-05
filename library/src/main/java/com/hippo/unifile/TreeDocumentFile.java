@@ -116,10 +116,10 @@ class TreeDocumentFile extends UniFile {
 
     @Override
     public String getName() {
-        if (mName != null) {
-            return mName;
+        if (mName == null) {
+            mName = DocumentsContractApi19.getName(mContext, mUri);
         }
-        return DocumentsContractApi19.getName(mContext, mUri);
+        return mName;
     }
 
     @Override
@@ -211,8 +211,7 @@ class TreeDocumentFile extends UniFile {
         final NamedUri[] uris = DocumentsContractApi21.listFilesNamed(mContext, mUri);
         final ArrayList<UniFile> results = new ArrayList<>();
         for (NamedUri uri : uris) {
-            String name = DocumentsContractApi19.getName(mContext, uri.uri);
-            if (name != null && filter.accept(this, name)) {
+            if (uri.name != null && filter.accept(this, uri.name)) {
                 results.add(new TreeDocumentFile(this, mContext, uri.uri, uri.name));
             }
         }
